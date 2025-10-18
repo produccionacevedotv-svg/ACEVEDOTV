@@ -14,28 +14,39 @@
       padding: 0;
     }
     header {
-      background-color: #e60000;
+      background: linear-gradient(90deg, #e60000, #8b0000);
       padding: 15px;
       font-size: 1.5em;
       font-weight: bold;
       text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6);
     }
     .button-container {
-      margin: 20px 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 20px;
+      gap: 10px;
     }
     button {
-      background-color: #333;
+      background-color: #222;
       color: #fff;
       border: none;
       padding: 10px 20px;
-      margin: 5px;
       font-size: 1em;
       cursor: pointer;
       border-radius: 5px;
-      transition: background 0.3s;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 8px rgba(255,255,255,0.1);
     }
     button:hover {
       background-color: #e60000;
+      transform: scale(1.05);
+    }
+    button.active {
+      background-color: #e60000;
+      box-shadow: 0 0 15px #e60000;
     }
     video {
       width: 90%;
@@ -44,6 +55,14 @@
       background: #000;
       border: 3px solid #e60000;
       border-radius: 10px;
+      box-shadow: 0 0 20px rgba(230,0,0,0.5);
+      margin-bottom: 20px;
+    }
+    footer {
+      font-size: 0.9em;
+      padding: 10px;
+      background: #111;
+      color: #aaa;
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -55,18 +74,42 @@
   </header>
 
   <div class="button-container">
-    <button onclick="changeChannel('https://byecableiptvnew3.ddns.net/ENVIVOMIGENTE/index.m3u8')">Canal 1 - Acevedo TV</button>
-    <button onclick="changeChannel('https://mdstrm.com/live-stream-playlist/5a5e1c2568b1910913db5fe2.m3u8')">Canal 2 - Wix TV</button>
-    <button onclick="changeChannel('https://59ec5453559f0.streamlock.net/JennyLive/JennyLive/playlist.m3u8')">Canal 3 - Película TV</button>
+    <!-- Canales principales -->
+    <button onclick="changeChannel('https://byecableiptvnew3.ddns.net/ENVIVOMIGENTE/index.m3u8', this)">Canal 1 - Acevedo TV</button>
+    <button onclick="changeChannel('https://mdstrm.com/live-stream-playlist/5a5e1c2568b1910913db5fe2.m3u8', this)">Canal 2 - Wix TV</button>
+    <button onclick="changeChannel('https://59ec5453559f0.streamlock.net/JennyLive/JennyLive/playlist.m3u8', this)">Canal 3 - Película TV</button>
+
+    <!-- Películas y series -->
+    <button onclick="changeChannel('https://59ce1298bfb98.streamlock.net/cinevision/cinevision/playlist.m3u8', this)">Canal 4 - Cinevisión</button>
+    <button onclick="changeChannel('https://stmv1.srvif.com/retrotv/retrotv/playlist.m3u8', this)">Canal 5 - Retro Plus TV</button>
+    <button onclick="changeChannel('https://origin3.cdn.mediastre.am/live/planetatv/playlist.m3u8', this)">Canal 6 - Planeta TV</button>
+
+    <!-- Documentales y cultura -->
+    <button onclick="changeChannel('https://dwstream4-lh.akamaihd.net/i/dwstream4_live@131329/master.m3u8', this)">Canal 7 - DW Español</button>
+    <button onclick="changeChannel('https://live.cgtn.com/1000d/prog_index.m3u8', this)">Canal 8 - CGTN Documentary</button>
+    <button onclick="changeChannel('https://d18dyiwu97wm6q.cloudfront.net/playlist2160p.m3u8', this)">Canal 9 - Love Nature 4K</button>
+    <button onclick="changeChannel('https://static.france24.com/live/F24_ES_HI_HLS/live_tv.m3u8', this)">Canal 10 - France 24 Español</button>
+
+    <!-- Música -->
+    <button onclick="changeChannel('https://stream-02.nyc.dailymotion.com/sec(0123456789)/dm/3/x7ul6sf/s/live-3.m3u8', this)">Canal 11 - Clásicos Latinos</button>
+    <button onclick="changeChannel('https://srv1.zcast.com.br/redemix/redemix/playlist.m3u8', this)">Canal 12 - RedeMix TV</button>
   </div>
 
   <video id="player" controls autoplay></video>
 
+  <footer>
+    © 2025 Acevedo TV | El mejor entretenimiento desde el Huila para el mundo
+  </footer>
+
   <script>
     const video = document.getElementById('player');
-    function changeChannel(url) {
+    let hls;
+
+    function changeChannel(url, btn) {
+      if (hls) hls.destroy();
+
       if (Hls.isSupported()) {
-        const hls = new Hls();
+        hls = new Hls();
         hls.loadSource(url);
         hls.attachMedia(video);
         video.play();
@@ -74,12 +117,19 @@
         video.src = url;
         video.play();
       } else {
-        alert('Tu dispositivo no soporta este tipo de video. Intenta en otro navegador o TV Box.');
+        alert('Tu dispositivo no soporta este tipo de video.');
       }
+
+      document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
     }
 
-    // Reproduce el primer canal al cargar
-    window.onload = () => changeChannel('https://byecableiptvnew3.ddns.net/ENVIVOMIGENTE/index.m3u8');
+    // Canal inicial
+    window.onload = () => {
+      const firstBtn = document.querySelector('.button-container button');
+      changeChannel('https://byecableiptvnew3.ddns.net/ENVIVOMIGENTE/index.m3u8', firstBtn);
+      firstBtn.classList.add('active');
+    };
   </script>
 
 </body>
